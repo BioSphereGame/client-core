@@ -4,5 +4,5 @@ version = "0.0.1"
 edition = "2021"
 
 [dependencies]
-logger = { git = "https://github.com/BioSphereGame/rust-logger.git", tag="v0.1.1" }
-sdl-gui = { path = "../sdl-gui" }
+logger = { git = "https://github.com/BioSphereGame/rust-logger.git", tag = "v0.1.1" }
+gfx = { git = "https://github.com/BioSphereGame/gfx.git", tag = "v0.1.0" }
