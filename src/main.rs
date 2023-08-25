@@ -41,13 +41,13 @@ const TILE_TWO: [u32; TILE_SIZE * TILE_SIZE] = [
     0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00,
     0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_FF_00_FF, 0xFF_00_FF_00, 0xFF_00_FF_00, 0xFF_00_FF_00,
 ];
-const tiles: [[u32; TILE_SIZE * TILE_SIZE]; 2] = [
+const TILES: [[u32; TILE_SIZE * TILE_SIZE]; 2] = [
     TILE_ONE,
     TILE_TWO,
 ];
-const map_size_x: usize = 30;
-const map_size_y: usize = 20;
-const map: [u32; map_size_y * map_size_x] = [
+const MAP_SIZE_X: usize = 30;
+const MAP_SIZE_Y: usize = 20;
+const MAP: [u32; MAP_SIZE_Y * MAP_SIZE_X] = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
     1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 1,
@@ -85,10 +85,10 @@ fn run() {
 
         window.draw_rectangle(0, 0, 160, 240, 0xFF_181818);
         // window.draw_sprite(&TILE_ONE, TILE_SIZE, TILE_SIZE, 10, 12);
-        for y in 0..map_size_y {
-            for x in 0..map_size_x {
-                let tile = map[y * map_size_x + x];
-                window.draw_sprite(&tiles[tile as usize], TILE_SIZE, TILE_SIZE, y * TILE_SIZE, x * TILE_SIZE);
+        for y in 0..MAP_SIZE_Y {
+            for x in 0..MAP_SIZE_X {
+                let tile = MAP[y * MAP_SIZE_X + x];
+                window.draw_sprite(&TILES[tile as usize], TILE_SIZE, TILE_SIZE, y * TILE_SIZE, x * TILE_SIZE);
             }
         }
         window.redraw();
