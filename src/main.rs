@@ -1,8 +1,5 @@
 use logger;
-use sdl_gui;
-
-use std::thread;
-use std::time::{Duration, Instant};
+use gfx;
 
 fn say_hi() {
     logger::log(
@@ -14,7 +11,7 @@ fn say_hi() {
         ).as_str()
     );
     logger::say_hi();
-    sdl_gui::say_hi();
+    gfx::say_hi();
 }
 
 fn main() {
@@ -22,49 +19,33 @@ fn main() {
     run();
 }
 
+const TILE_SIZE: usize = 8;
+const TEST_TILE: [u32; TILE_SIZE * TILE_SIZE] = [
+    0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF,
+    0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF,
+    0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF,
+    0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_FF_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_FF_00_FF, 0xFF_00_00_FF,
+    0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_FF_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF,
+    0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF,
+    0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF,
+    0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_FF_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF, 0xFF_00_00_FF,
+];
+
 fn run() {
-    let mut screen = sdl_gui::Screen::new("BioSphere", 1280, 720);
+    let mut window = gfx::Screen::new(
+        160,
+        240,
+        5,
+        "BioSphere",
+        30,
+    );
 
-    logger::log(logger::PREFIX_DEBUG, "Starting Screen update cycle");
-    let targetfps = 30;
-    let targetframetime = Duration::from_millis(1000 / targetfps);
-    'running: loop {
-        let start = Instant::now();
-        for key in screen.get_all_pressed_buttons() {
-            match key.name().as_str() {
-                "Escape" => break 'running,
-                _ => {}
-            }
-        }
-        screen.clear();
-        
-        let sizex: i32 = 255;
-        let sizey: i32 = 255;
-        let mut sprite: Vec<(u8, u8, u8, bool)> = vec!();
-        for y in 0..sizex {
-            for x in 0..sizex {
-                sprite.push((y as u8, x as u8, 0, true));
-            }
-        }
-        screen.render_texture_from_color_vec(&sprite, sizex, sizey, 1);
-
-        // screen.draw_filled_polygon(&[
-        //     (10, 20),
-        //     (20, 110),
-        //     (200, 200),
-        //     (110, 10),
-        // ], &[255, 0, 0, 255]);
-        
-        screen.draw();
-        let elapsed = start.elapsed();
-        if elapsed < targetframetime {
-            thread::sleep(targetframetime - elapsed);
-        } else {
-            logger::log(logger::PREFIX_WARN, format!(
-                "Frame took too long to render: {}ms from {}ms max",
-                elapsed.as_millis(),
-                targetframetime.as_millis(),
-            ).as_str());
-        }
+    while window.is_open() {
+        window.update_start();
+        window.draw_rectangle(0, 0, 160, 240, 0xFF_181818);
+        window.draw_sprite(&TEST_TILE, TILE_SIZE, TILE_SIZE, 10, 12);
+        window.redraw();
+        window.update_end();
+        window.wait_for_next_redraw();
     }
 }
