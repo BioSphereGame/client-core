@@ -6,3 +6,4 @@ edition = "2021"
 [dependencies]
 logger = { git = "https://github.com/BioSphereGame/rust-logger.git", tag = "v0.1.1" }
 gfx = { path = "../gfx" }
+rand = "0.8.5"

@@ -74,9 +74,9 @@ const MAP: [u32; MAP_SIZE_Y * MAP_SIZE_X] = [
 
 fn run() {
     let mut window = gfx::Screen::new(
-        720,
-        1280,
-        1,
+        720 / 4,
+        1280 / 4,
+        4,
         "BioSphere",
         33,
     );

@@ -1,6 +1,7 @@
 use super::tile::*;
 use super::logger;
 use gfx;
+use rand::Rng;
 
 pub struct MapData {
     pub tiles: Vec<TileData>,
@@ -79,51 +80,43 @@ impl MapData {
         self.size_y = data.len() as u16;
         self.size_x = data[0].len() as u16;
     }
-}
 
-pub fn clip_map(map: &MapData, tiles_y: i16, tiles_x: i16, pos_y: i16, pos_x: i16) -> MapData {
-    let tiles_up = tiles_y / 2;
-    let tiles_down = tiles_y - tiles_up;
-    let tiles_left = tiles_x / 2;
-    let tiles_right = tiles_x - tiles_left;
-
-    let mut clipped_y_size = tiles_up + tiles_down;
-    let mut clipped_x_size = tiles_left + tiles_right;
-
-    if pos_y - tiles_up < 0 {
-        clipped_y_size += pos_y - tiles_up;
-    }
-    if pos_y + tiles_down >= map.size_y as i16 {
-        clipped_y_size += pos_y + tiles_down - map.size_y as i16;
-    }
-    if pos_x - tiles_left < 0 {
-        clipped_x_size += pos_x - tiles_left;
-    }
-    if pos_x + tiles_right >= map.size_x as i16 {
-        clipped_x_size += pos_x + tiles_right - map.size_x as i16;
-    }
-
-    let clipped_up = if pos_y - tiles_up < 0 { 0 } else { pos_y - tiles_up };
-    let clipped_down = if pos_y + tiles_down >= map.size_y as i16 { map.size_y as i16 } else { pos_y + tiles_down };
-    let clipped_left = if pos_x - tiles_left < 0 { 0 } else { pos_x - tiles_left };
-    let clipped_right = if pos_x + tiles_right >= map.size_x as i16 { map.size_x as i16 } else { pos_x + tiles_right };
-
-    let mut new_map = MapData::new(tiles_y as u16, tiles_x as u16);
-    let mut new_data: Vec<u16> = vec![0; 0];
-    for y in pos_y - clipped_up..pos_y + clipped_down {
-        for x in pos_x - clipped_left..pos_x + clipped_right {
-            new_data.push(map.data[(y * map.size_x as i16 + x) as usize]);
+    pub fn randomize(&mut self) {
+        let mut rng = rand::thread_rng();
+        for y in 0..self.size_y {
+            for x in 0..self.size_x {
+                self.data[(y * self.size_x + x) as usize] = (rng.gen_range(0..self.tiles_amount)) as u16;
+            }
         }
     }
-    new_map.set_data_from_1d_vec(new_data, clipped_y_size as u16, clipped_x_size as u16);
-    return new_map;
 }
 
 pub fn draw_map(
     screen: &mut gfx::Screen,
     map: &MapData,
-    screen_pos_y: u16,
-    screen_pos_x: u16,
+    start_y: u16,
+    start_x: u16,
+    screen_size_y: u16,
+    screen_size_x: u16,
 ) {
-
+    let tile_size_y: u16 = map.get_tiles()[0].size_y;
+    let tile_size_x: u16 = map.get_tiles()[0].size_x;
+    for y in 0..map.size_y {
+        for x in 0..map.size_x {
+            let tile = map.get_tiles()[map.data[(y * map.size_x + x) as usize] as usize].clone();
+            if tile_size_y != tile.size_y || tile_size_x != tile.size_x {
+                logger::log(logger::PREFIX_ERROR, "Drawing map, but sizes of tiles are not equal!");
+                std::process::exit(1);
+            }
+            if y >= start_y && y < start_y + screen_size_y && x >= start_x && x < start_x + screen_size_x {
+                screen.draw_sprite(
+                    &tile.get_as_1d_vec().0.into_boxed_slice(),
+                    tile_size_y as usize,
+                    tile_size_x as usize,
+                    ((y - start_y) * tile_size_y) as usize,
+                    ((x - start_x) * tile_size_x) as usize,
+                );
+            }
+        }
+    }
 }
