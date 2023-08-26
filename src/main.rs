@@ -52,6 +52,13 @@ fn run() {
         SCALE,
         "BioSphere",
         33,
+        gfx::WindowOptionsSettings::new(
+            false,
+            true,
+            true,
+            false,
+            false,
+        ),
     );
 
     let tiles = vec![
