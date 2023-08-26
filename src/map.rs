@@ -12,10 +12,11 @@ pub struct MapData {
 }
 impl MapData {
     pub fn new(size_y: u16, size_x: u16) -> MapData {
+        let data = vec![0; (size_y * size_x) as usize];
         return MapData {
-            tiles: vec![TileData::new_default_empty(); 0],
+            tiles: vec![TileData::new_default_empty(); 1],
             tiles_amount: 1,
-            data: vec![0, size_y * size_x],
+            data: data,
             size_y: size_y,
             size_x: size_x,
         }
@@ -37,6 +38,10 @@ impl MapData {
     pub fn set_tiles(&mut self, tiles: Vec<TileData>) {
         self.tiles = tiles;
         self.tiles_amount = self.tiles.len() as u16;
+    }
+
+    pub fn fill(&mut self, tile: u16) {
+        self.data = vec![tile; (self.size_y * self.size_x) as usize];
     }
 
     pub fn get_tiles(&self) -> Vec<TileData> {
@@ -83,10 +88,8 @@ impl MapData {
 
     pub fn randomize(&mut self) {
         let mut rng = rand::thread_rng();
-        for y in 0..self.size_y {
-            for x in 0..self.size_x {
-                self.data[(y * self.size_x + x) as usize] = (rng.gen_range(0..self.tiles_amount)) as u16;
-            }
+        for i in 0..self.data.len() {
+                self.data[(i) as usize] = (rng.gen_range(0..self.tiles_amount)) as u16;
         }
     }
 }
@@ -99,24 +102,16 @@ pub fn draw_map(
     screen_size_y: u16,
     screen_size_x: u16,
 ) {
-    let tile_size_y: u16 = map.get_tiles()[0].size_y;
-    let tile_size_x: u16 = map.get_tiles()[0].size_x;
-    for y in 0..map.size_y {
-        for x in 0..map.size_x {
-            let tile = map.get_tiles()[map.data[(y * map.size_x + x) as usize] as usize].clone();
-            if tile_size_y != tile.size_y || tile_size_x != tile.size_x {
-                logger::log(logger::PREFIX_ERROR, "Drawing map, but sizes of tiles are not equal!");
-                std::process::exit(1);
-            }
-            if y >= start_y && y < start_y + screen_size_y && x >= start_x && x < start_x + screen_size_x {
-                screen.draw_sprite(
-                    &tile.get_as_1d_vec().0.into_boxed_slice(),
-                    tile_size_y as usize,
-                    tile_size_x as usize,
-                    ((y - start_y) * tile_size_y) as usize,
-                    ((x - start_x) * tile_size_x) as usize,
-                );
-            }
+    let tile_size_y: usize = map.get_tiles()[0].size_y as usize;
+    let tile_size_x: usize = map.get_tiles()[0].size_x as usize;
+    for i in 0..map.data.len() {
+        let tile = map.tiles[map.data[i] as usize].clone();
+        let map_y = i as u16 / map.size_x;
+        let map_x = i as u16 % map.size_x;
+        if map_y >= start_y && map_y < start_y + screen_size_y && map_x >= start_x && map_x < start_x + screen_size_x {
+            let screen_y = map_y as usize * tile_size_y;
+            let screen_x = map_x as usize * tile_size_x;
+            screen.draw_sprite(tile.data.as_slice(), tile_size_y, tile_size_x, screen_y, screen_x);
         }
     }
 }

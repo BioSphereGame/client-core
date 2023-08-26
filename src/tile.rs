@@ -2,7 +2,7 @@ use super::logger;
 
 #[derive(Clone)]
 pub struct TileData {
-    data: Vec<u32>,
+    pub data: Vec<u32>,
     pub size_y: u16,
     pub size_x: u16,
 }
@@ -65,4 +65,20 @@ impl TileData {
         }
         return data;
     }
+}
+
+pub fn tile_from_1d_data(data: Vec<u32>, size_y: u16, size_x: u16) -> TileData {
+    let mut tile = TileData::new(size_y, size_x);
+    tile.set_from_vec(data, size_y, size_x);
+    return tile;
+}
+
+pub fn tile_from_2d_data(data: Vec<Vec<u32>>) -> TileData {
+    let mut tile = TileData::new(data.len() as u16, data[0].len() as u16);
+    tile.set_from_vec(
+        data.iter().flatten().cloned().collect(),
+        data.len() as u16,
+        data[0].len() as u16,
+    );
+    return tile;
 }
