@@ -26,6 +26,9 @@ impl Timer {
     pub fn get_time_between_as_micros(&self) -> u128 {
         return self.time_between.as_micros();
     }
+    pub fn get_time_between_as_float_millis(&self) -> f64 {
+        return self.time_between.as_micros() as f64 / 1000.0;
+    }
     pub fn wait(&self, max: u128) {
         if max > self.time_between.as_micros() {
             thread::sleep(Duration::from_micros((max - self.time_between.as_micros()) as u64));
