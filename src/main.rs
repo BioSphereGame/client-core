@@ -1,4 +1,6 @@
 pub mod timer;
+pub mod map;
+pub mod tile;
 use logger;
 use gfx;
 
@@ -72,9 +74,9 @@ const MAP: [u32; MAP_SIZE_Y * MAP_SIZE_X] = [
 
 fn run() {
     let mut window = gfx::Screen::new(
-        160,
-        240,
-        5,
+        720,
+        1280,
+        1,
         "BioSphere",
         33,
     );
@@ -85,6 +87,9 @@ fn run() {
 
         window.draw_rectangle(0, 0, 160, 240, 0xFF_181818);
         // window.draw_sprite(&TILE_ONE, TILE_SIZE, TILE_SIZE, 10, 12);
+        // window.draw_sprite(&TILE_ONE, TILE_SIZE, TILE_SIZE, 20, 12);
+        // window.draw_sprite(&TILE_ONE, TILE_SIZE, TILE_SIZE, 30, 12);
+        // window.draw_sprite(&TILE_ONE, TILE_SIZE, TILE_SIZE, 30, 12);
         for y in 0..MAP_SIZE_Y {
             for x in 0..MAP_SIZE_X {
                 let tile = MAP[y * MAP_SIZE_X + x];
