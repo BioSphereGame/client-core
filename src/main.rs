@@ -37,7 +37,7 @@ fn run() {
             false,
             false,
         ),
-        include_bytes!("../assets/UbuntuMono.ttf").to_vec(),
+        include_bytes!("../assets/SMB1.ttf").to_vec(),
     );
     let size_y = 720 / SCALE;
     let size_x = 1280 / SCALE;
@@ -46,14 +46,14 @@ fn run() {
     while window.is_open() {
         timer_main.start();
 
-        window.draw_rectangle(0, 0, size_y, size_x, 0xFF_000000);
+        window.draw_rectangle(0, 0, size_y, size_x, 0xFF_FFFFFF);
         window.draw_text(
             0,
             0,
-            (50.0 / (SCALE as f64 / 1.5)) as usize,
-            0xFF_FFFFFF,
-            0xFF_AAAAAA,
-            "AaBbCcDdEeFfGg!@#$%^&*()_+",
+            (10.0 / (SCALE as f64 / 1.5)) as usize,
+            2,
+            0xFF_000000,
+            "Hello, world! That is realy pixelated font!\nWith multi-line!\nAnd it is supports 1234567890! Numbers!\nAnd all ASCII symbols! And even Cyrillic!\nПривет, мир! Это кириллица!\n!@#$%^&*()<>?,./;':",
         );
 
         window.redraw();
