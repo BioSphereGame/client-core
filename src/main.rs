@@ -2,15 +2,14 @@ pub mod timer;
 pub mod graphics;
 use logger;
 
+macro_rules! log_debug {
+    ($s:expr) => {
+        logger::log(logger::PREFIX_DEBUG, $s);
+    };
+}
+
 fn say_hi() {
-    logger::log(
-        logger::PREFIX_DEBUG,
-        format!("Booting {}Core v{}{} up...",
-            logger::COLOR_BOLD_GREEN,
-            env!("CARGO_PKG_VERSION"),
-            logger::COLOR_RESET,
-        ).as_str()
-    );
+    log_debug!(format!("Booting {}Core v{}{} up...", logger::COLOR_BOLD_GREEN, env!("CARGO_PKG_VERSION"), logger::COLOR_RESET).as_str());
     logger::say_hi();
     gfx::say_hi();
 }
@@ -40,14 +39,17 @@ fn run() {
     let size_x = 1280 / SCALE;
 
     let font = gfx::ui::font::FontData::new(include_bytes!("../assets/SMB1.ttf").to_vec());
-    let mut test_text = gfx::ui::text::RawText::new(
+    let mut test_text = gfx::ui::text::RendererText::new(
         0, 0,
-        24, 1, 1,
+        24 / SCALE as u16, 1, 1,
         0xFF_000000,
-        font, "Hello, world! That is realy pixelated font!\nWith multi-line!\nAnd it supports 1234567890! Numbers!\nAnd all ASCII symbols! And even Cyrillic!\nПривет, мир! Это кириллица!\n!@#$%^&*()<>?,./;':".to_string(),
+        font.clone(), "Hello, world!".to_string(),
+        size_y, size_x,
     );
+    test_text.render();
 
     let mut timer_main = timer::Timer::new();
+    log_debug!("Starting main update cycle...");
     while window.is_open() {
         timer_main.start();
 
