@@ -47,6 +47,14 @@ fn run() {
         size_y, size_x,
     );
     test_text.render();
+    let mut test_text_two = gfx::ui::text::RendererText::new(
+        2, 0,
+        24 / SCALE as u16, 1, 1,
+        0xFF_FF00FF,
+        font.clone(), "Hello, world 2 !".to_string(),
+        size_y, size_x,
+    );
+    test_text_two.render();
 
     let mut timer_main = timer::Timer::new();
     log_debug!("Starting main update cycle...");
@@ -55,6 +63,7 @@ fn run() {
 
         window.draw_rectangle(0, 0, size_y, size_x, 0xFF_FFFFFF);
         test_text.draw(&mut window);
+        test_text_two.draw(&mut window);
         window.redraw();
 
         timer_main.stop();
