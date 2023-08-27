@@ -1,8 +1,6 @@
 pub mod timer;
-pub mod map;
-pub mod tile;
+pub mod graphics;
 use logger;
-use gfx;
 
 fn say_hi() {
     logger::log(
@@ -37,25 +35,24 @@ fn run() {
             false,
             false,
         ),
-        include_bytes!("../assets/SMB1.ttf").to_vec(),
     );
     let size_y = 720 / SCALE;
     let size_x = 1280 / SCALE;
+
+    let font = gfx::ui::font::FontData::new(include_bytes!("../assets/SMB1.ttf").to_vec());
+    let mut test_text = gfx::ui::text::RawText::new(
+        0, 0,
+        24, 1, 1,
+        0xFF_000000,
+        font, "Hello, world! That is realy pixelated font!\nWith multi-line!\nAnd it supports 1234567890! Numbers!\nAnd all ASCII symbols! And even Cyrillic!\nПривет, мир! Это кириллица!\n!@#$%^&*()<>?,./;':".to_string(),
+    );
 
     let mut timer_main = timer::Timer::new();
     while window.is_open() {
         timer_main.start();
 
         window.draw_rectangle(0, 0, size_y, size_x, 0xFF_FFFFFF);
-        window.draw_text(
-            0,
-            0,
-            (10.0 / (SCALE as f64 / 1.5)) as usize,
-            2,
-            0xFF_000000,
-            "Hello, world! That is realy pixelated font!\nWith multi-line!\nAnd it is supports 1234567890! Numbers!\nAnd all ASCII symbols! And even Cyrillic!\nПривет, мир! Это кириллица!\n!@#$%^&*()<>?,./;':",
-        );
-
+        test_text.draw(&mut window);
         window.redraw();
 
         timer_main.stop();

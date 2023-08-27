@@ -1,5 +1,5 @@
 use super::tile::*;
-use super::logger;
+use crate::logger;
 use gfx;
 use rand::Rng;
 

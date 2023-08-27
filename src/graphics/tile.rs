@@ -1,4 +1,4 @@
-use super::logger;
+use crate::logger;
 
 #[derive(Clone)]
 pub struct TileData {
