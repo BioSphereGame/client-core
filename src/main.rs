@@ -26,7 +26,7 @@ fn run() {
         1280 / SCALE,
         SCALE,
         "BioSphere",
-        33,
+        60,
         gfx::WindowOptionsSettings::new(
             false,
             true,
@@ -39,31 +39,29 @@ fn run() {
     let size_x = 1280 / SCALE;
 
     let font = gfx::ui::font::FontData::new(include_bytes!("../assets/SMB1.ttf").to_vec());
-    let mut test_text = gfx::ui::text::RendererText::new(
-        0, 0,
-        24 / SCALE as u16, 1, 1,
-        0xFF_000000,
-        font.clone(), "Hello, world!".to_string(),
-        size_y, size_x,
+
+    let mut button = gfx::ui::button::TextRendererButton::new(
+        50, 10,
+        50, 325,
+        0xFF_E7E7E7, 0xFF_FFFFFF, 0xFF_909090,
+        0xFF_D7D7D7, 3,
+        font.clone(), 60,
+        "Hello, World!".to_string(), 25, 0xFF_FF0000,
     );
-    test_text.render();
-    let mut test_text_two = gfx::ui::text::RendererText::new(
-        2, 0,
-        24 / SCALE as u16, 1, 1,
-        0xFF_FF00FF,
-        font.clone(), "Hello, world 2 !".to_string(),
-        size_y, size_x,
-    );
-    test_text_two.render();
+    button.render();
 
     let mut timer_main = timer::Timer::new();
     log_debug!("Starting main update cycle...");
     while window.is_open() {
         timer_main.start();
 
-        window.draw_rectangle(0, 0, size_y, size_x, 0xFF_FFFFFF);
-        test_text.draw(&mut window);
-        test_text_two.draw(&mut window);
+        button.update(&mut window);
+        if button.clicked {
+            log_debug!("Button clicked!");
+        }
+
+        window.draw_rectangle(0, 0, size_y, size_x, 0xFF_181818);
+        button.draw(&mut window);
         window.redraw();
 
         timer_main.stop();
