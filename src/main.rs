@@ -42,12 +42,13 @@ fn run() {
 
     let mut button = gfx::ui::button::TextRendererButton::new(
         50, 10,
-        50, 325,
+        50, 200,
         0xFF_E7E7E7, 0xFF_FFFFFF, 0xFF_909090,
         0xFF_D7D7D7, 3,
-        font.clone(), 60,
-        "Hello, World!".to_string(), 25, 0xFF_FF0000,
+        font.clone(), 2,
+        "You clicked: ".to_string(), 12, 0xFF_FF0000,
     );
+    let mut button_counter = 0;
     button.render();
 
     let mut timer_main = timer::Timer::new();
@@ -57,7 +58,8 @@ fn run() {
 
         button.update(&mut window);
         if button.clicked {
-            log_debug!("Button clicked!");
+            button_counter += 1;
+            button.set_text(format!("You clicked: {}", button_counter));
         }
 
         window.draw_rectangle(0, 0, size_y, size_x, 0xFF_181818);
