@@ -26,8 +26,8 @@ fn run() {
         1280 / SCALE,
         SCALE,
         "BioSphere",
-        60,
-        gfx::WindowOptionsSettings::new(
+        24,
+        gfx::WindowSettings::new(
             false,
             true,
             true,
@@ -85,13 +85,14 @@ fn run() {
         0,
         0,
         50,
+        750,
+
+        format!("Counter: {}", couter),
+        50,
         1,
         1,
-        0xFF_FFFFFF,
+        0xFF_E7E7E7,
         font.clone(),
-        "Counter: ".to_string(),
-        size_y,
-        size_x,
     );
     text.render();
 
