@@ -40,30 +40,76 @@ fn run() {
 
     let font = gfx::ui::font::FontData::new(include_bytes!("../assets/SMB1.ttf").to_vec());
 
-    let mut button = gfx::ui::button::TextRendererButton::new(
-        50, 10,
-        50, 200,
-        0xFF_E7E7E7, 0xFF_FFFFFF, 0xFF_909090,
-        0xFF_D7D7D7, 3,
-        font.clone(), 2,
-        "You clicked: ".to_string(), 12, 0xFF_FF0000,
-    );
-    let mut button_counter = 0;
-    button.render();
+    let mut couter = 0;
+    let mut plus_button = gfx::ui::button::TextRendererButton::new(
+        50,
+        175,
+        50,
+        140,
 
+        "Plus".to_string(),
+        35,
+        0xFF_181818,
+        font.clone(),
+
+        0xFF_E7E7E7,
+        0xFF_FFFFFF,
+        0xFF_A0A0A0,
+
+        0xFF_C0C0C0,
+        3,
+        2,
+    );
+    plus_button.render();
+
+    let mut minus_button = gfx::ui::button::TextRendererButton::new(
+        50,
+        0,
+        50,
+        175,
+
+        "Minus".to_string(),
+        35,
+        0xFF_181818,
+        font.clone(),
+
+        0xFF_E7E7E7,
+        0xFF_FFFFFF,
+        0xFF_A0A0A0,
+
+        0xFF_C0C0C0,
+        3,
+        2,
+    );
+    let mut text = gfx::ui::text::Text::new(
+        0,
+        0,
+        50,
+        1,
+        1,
+        0xFF_FFFFFF,
+        font.clone(),
+        "Counter: ".to_string(),
+        size_y,
+        size_x,
+    );
+    text.render();
+
+    minus_button.render();
     let mut timer_main = timer::Timer::new();
     log_debug!("Starting main update cycle...");
     while window.is_open() {
         timer_main.start();
 
-        button.update(&mut window);
-        if button.clicked {
-            button_counter += 1;
-            button.set_text(format!("You clicked: {}", button_counter));
-        }
+        plus_button.update(&mut window);
+        if plus_button.pressed {couter += 1; text.text = format!("Counter: {}", couter); text.render()}
+        minus_button.update(&mut window);
+        if minus_button.pressed {couter -= 1; text.text = format!("Counter: {}", couter); text.render()}
 
         window.draw_rectangle(0, 0, size_y, size_x, 0xFF_181818);
-        button.draw(&mut window);
+        plus_button.draw(&mut window);
+        minus_button.draw(&mut window);
+        text.draw(&mut window);
         window.redraw();
 
         timer_main.stop();
