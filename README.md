@@ -1,2 +1,1 @@
-# client-core
-The main core for the client
+# Minifb test - tesitng of minifb lib 
